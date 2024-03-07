@@ -3,10 +3,11 @@
 //
 
 import { z } from "zod";
- 
+
 import { CronConfigurationSchema } from "./CronConfiguration.js";
 import { DatabaseConfigurationSchema } from "./DatabaseConfiguration.js";
 import { S3ConfigurationSchema } from "./S3Configuration.js";
+import { SMTPConfigurationSchema } from "./SMTPConfiguration.js";
 
 //
 // Type
@@ -26,7 +27,9 @@ export const ConfigurationSchema = z.object(
 
 		outputPath: z.string(),
 
-		s3: S3ConfigurationSchema,
+		s3Configuration: S3ConfigurationSchema,
+
+		smtpConfiguration: SMTPConfigurationSchema,
 
 		tables: z.array(z.string()).default([]),
 	});

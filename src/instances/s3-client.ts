@@ -12,12 +12,12 @@ import { configuration } from "./configuration.js";
 
 export const s3Client = new S3Client(
 	{
-		endpoint: configuration.s3.endpoint,
+		endpoint: configuration.s3Configuration.endpoint,
 		forcePathStyle: false,
-		region: configuration.s3.region,
+		region: configuration.s3Configuration.region,
 		credentials:
 			{
-				accessKeyId: configuration.s3.accessKeyId,
-				secretAccessKey: configuration.s3.secretAccessKey,
+				accessKeyId: configuration.s3Configuration.accessKeyId,
+				secretAccessKey: configuration.s3Configuration.secretAccessKey,
 			},
 	});

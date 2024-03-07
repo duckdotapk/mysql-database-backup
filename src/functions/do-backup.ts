@@ -10,6 +10,8 @@ import { createOutputDirectories } from "./create-output-directories.js";
 import { dumpTables } from "./dump-tables.js";
 import { getTableNames } from "./get-table-names.js";
 import { uploadArchive } from "./upload-archive.js";
+import { mailTransporter } from "../instances/mail-transporter.js";
+import { configuration } from "../instances/configuration.js";
 
 //
 // Function
@@ -53,5 +55,17 @@ export async function doBackup()
 
 	const durationFormatted = humanizeDuration(durationMilliseconds);
 
-	console.log("[SyncAllTables] Backup completed at " + endTimeFormatted + " in " + durationFormatted + ".");
+	console.log("[DoBackup] Backup completed at " + endTimeFormatted + " in " + durationFormatted + ".");
+
+	//
+	// Email Recipient
+	//
+
+	await mailTransporter.sendMail(
+		{
+			from: `"Database Backup Cron Job" <${ configuration.smtpConfiguration.username }>`,
+			to: configuration.smtpConfiguration.recipients.join(", "),
+			subject: "Database Backup Completed at " + endTimeFormatted,
+			text: "Database Backup Completed at " + endTimeFormatted + " in " + durationFormatted + ".",
+		});
 }

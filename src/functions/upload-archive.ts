@@ -18,14 +18,14 @@ export async function uploadArchive(archivePath : string) : Promise<void>
 {
 	console.log("[UploadArchive] Uploading archive...");
 
-	const key = configuration.s3.path + "/" + DateTime.utc().toFormat("yyyy_LL_dd_HH_mm_ss") + ".tar.gz";
+	const key = configuration.s3Configuration.path + "/" + DateTime.utc().toFormat("yyyy_LL_dd_HH_mm_ss") + ".tar.gz";
 
 	const readStream = fs.createReadStream(archivePath);
 
 	const putObjectCommand = new PutObjectCommand(
 		{
 			ACL: "private",
-			Bucket: configuration.s3.bucket,
+			Bucket: configuration.s3Configuration.bucket,
 			ContentType: "application/gzip",
 			Key: key,
 			Body: readStream,
