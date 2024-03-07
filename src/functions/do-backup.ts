@@ -66,7 +66,7 @@ export async function doBackup()
 		{
 			from: `"Database Backup Cron Job" <${ configuration.smtpConfiguration.username }>`,
 			to: configuration.smtpConfiguration.recipients.join(", "),
-			subject: "Database Backup Completed at " + endTimeFormatted,
-			text: "Database Backup Completed at " + endTimeFormatted + " in " + durationFormatted + ".",
+			subject: "Database backup for " + configuration.databaseConfiguration.database + " completed at " + endTimeFormatted,
+			text: "Database backup for " + configuration.databaseConfiguration.database + " completed at " + endTimeFormatted + " in " + durationFormatted + ".",
 		});
 }
