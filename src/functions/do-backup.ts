@@ -10,8 +10,9 @@ import { createOutputDirectories } from "./create-output-directories.js";
 import { dumpTables } from "./dump-tables.js";
 import { getTableNames } from "./get-table-names.js";
 import { uploadArchive } from "./upload-archive.js";
-import { mailTransporter } from "../instances/mail-transporter.js";
+
 import { configuration } from "../instances/configuration.js";
+import { mailTransporter } from "../instances/mail-transporter.js";
 
 //
 // Function

@@ -2,8 +2,9 @@
 // Imports
 //
 
+import mysql2 from "mysql2/promise.js";
+
 import { configuration } from "../instances/configuration.js";
-import { connectionPool } from "../instances/connection-pool.js";
 
 //
 // Function
@@ -11,6 +12,18 @@ import { connectionPool } from "../instances/connection-pool.js";
 
 export async function getTableNames() : Promise<string[]>
 {
+	console.log("[GetTableNames] Connecting to database...");
+
+	const connectionPool = mysql2.createPool(
+		{
+			host: configuration.databaseConfiguration.host,
+			port: configuration.databaseConfiguration.port,
+			user: configuration.databaseConfiguration.user,
+			password: configuration.databaseConfiguration.password,
+			database: configuration.databaseConfiguration.database,
+			dateStrings: true,
+		});
+
 	console.log("[GetTableNames] Getting table names from database...");
 
 	const [ rawTableRows ] = await connectionPool.query(`SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ?;`,
@@ -30,6 +43,8 @@ export async function getTableNames() : Promise<string[]>
 	{
 		tableNames = tableNames.filter(tableName => !configuration.tables.includes(tableName));
 	}
+
+	await connectionPool.end();
 
 	console.log("[GetTableNames] Filtered to " + tableNames.length + " table names using configuration.");
 
