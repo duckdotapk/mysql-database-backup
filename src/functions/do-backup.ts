@@ -20,53 +20,78 @@ import { mailTransporter } from "../instances/mail-transporter.js";
 
 export async function doBackup()
 {
-	//
-	// Start Log
-	//
+	try
+	{
+		//
+		// Start Log
+		//
 
-	const startTimeMilliseconds = DateTime.utc().toMillis();
+		const startTimeMilliseconds = DateTime.utc().toMillis();
 
-	const startTimeFormatted = DateTime.fromMillis(startTimeMilliseconds).toLocaleString(DateTime.DATETIME_MED);
+		const startTimeFormatted = DateTime.fromMillis(startTimeMilliseconds).toLocaleString(DateTime.DATETIME_MED);
 
-	console.log("[DoBackup] Starting backup at " + startTimeFormatted + "...");
+		console.log("[DoBackup] Starting backup at " + startTimeFormatted + "...");
 
-	//
-	// Do Backup
-	//
+		//
+		// Do Backup
+		//
 
-	await createOutputDirectories();
+		await createOutputDirectories();
 
-	const tableNames = await getTableNames();
+		const tableNames = await getTableNames();
 
-	await dumpTables(tableNames);
+		await dumpTables(tableNames);
 
-	const archivePath = await createArchive();
+		const archivePath = await createArchive();
 
-	await uploadArchive(archivePath);
+		await uploadArchive(archivePath);
 
-	//
-	// End Log
-	//
+		//
+		// End Log
+		//
 
-	const endTimeMilliseconds = DateTime.utc().toMillis();
+		const endTimeMilliseconds = DateTime.utc().toMillis();
 
-	const endTimeFormatted = DateTime.fromMillis(endTimeMilliseconds).toLocaleString(DateTime.DATETIME_MED);
+		const endTimeFormatted = DateTime.fromMillis(endTimeMilliseconds).toLocaleString(DateTime.DATETIME_MED);
 
-	const durationMilliseconds = endTimeMilliseconds - startTimeMilliseconds;
+		const durationMilliseconds = endTimeMilliseconds - startTimeMilliseconds;
 
-	const durationFormatted = humanizeDuration(durationMilliseconds);
+		const durationFormatted = humanizeDuration(durationMilliseconds);
 
-	console.log("[DoBackup] Backup completed at " + endTimeFormatted + " in " + durationFormatted + ".");
+		console.log("[DoBackup] Backup completed at " + endTimeFormatted + " in " + durationFormatted + ".");
 
-	//
-	// Email Recipient
-	//
+		//
+		// Email Recipients
+		//
 
-	await mailTransporter.sendMail(
-		{
-			from: `"Database Backup Cron Job" <${ configuration.smtpConfiguration.username }>`,
-			to: configuration.smtpConfiguration.recipients.join(", "),
-			subject: "Database backup for " + configuration.databaseConfiguration.database + " completed at " + endTimeFormatted,
-			text: "Database backup for " + configuration.databaseConfiguration.database + " completed at " + endTimeFormatted + " in " + durationFormatted + ".",
-		});
+		await mailTransporter.sendMail(
+			{
+				from: `"Database Backup Cron Job" <${ configuration.smtpConfiguration.username }>`,
+				to: configuration.smtpConfiguration.recipients.join(", "),
+				subject: "Database backup for " + configuration.databaseConfiguration.database + " completed at " + endTimeFormatted,
+				text: "Database backup for " + configuration.databaseConfiguration.database + " completed at " + endTimeFormatted + " in " + durationFormatted + ".",
+			});
+	}
+	catch (error)
+	{
+		//
+		// Get Message
+		//
+
+		const message = error instanceof Error
+			? error.message
+			: "Unsupported error thrown. See logs.";
+
+		//
+		// Email Recipients
+		//
+
+		await mailTransporter.sendMail(
+			{
+				from: `"Database Backup Cron Job" <${ configuration.smtpConfiguration.username }>`,
+				to: configuration.smtpConfiguration.recipients.join(", "),
+				subject: "Database backup for " + configuration.databaseConfiguration.database + " failed",
+				text: "Database backup for " + configuration.databaseConfiguration.database + " failed: " + message,
+			});
+	}
 }
