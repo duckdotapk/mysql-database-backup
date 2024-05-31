@@ -75,6 +75,12 @@ export async function doBackup()
 	catch (error)
 	{
 		//
+		// Log Error
+		//
+
+		console.error("[DoBackup] Error: " + error);
+
+		//
 		// Get Message
 		//
 
