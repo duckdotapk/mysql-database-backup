@@ -4,11 +4,10 @@
 
 import fs from "node:fs";
 
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { DateTime } from "luxon";
 
 import { configuration } from "../instances/configuration.js";
-import { s3Client } from "../instances/s3-client.js";
 
 //
 // Function
@@ -16,20 +15,36 @@ import { s3Client } from "../instances/s3-client.js";
 
 export async function uploadArchive(archivePath : string) : Promise<void>
 {
-	console.log("[UploadArchive] Uploading archive...");
+	for (const s3Configuration of configuration.s3Configurations)
+	{
+		console.log("[UploadArchive] Uploading archive to S3 bucket:", s3Configuration.endpoint, s3Configuration.bucket);
 
-	const key = configuration.s3Configuration.path + "/" + DateTime.utc().toFormat("yyyy_LL_dd_HH_mm_ss") + ".tar.gz";
+		const s3Client = new S3Client(
+			{
+				endpoint: s3Configuration.endpoint,
+				forcePathStyle: false,
+				region: s3Configuration.region,
+				credentials:
+					{
+						accessKeyId: s3Configuration.accessKeyId,
+						secretAccessKey: s3Configuration.secretAccessKey,
+					},
+			});
 
-	const readStream = fs.createReadStream(archivePath);
+		const key = s3Configuration.path + "/" + DateTime.utc().toFormat("yyyy_LL_dd_HH_mm_ss") + ".tar.gz";
 
-	const putObjectCommand = new PutObjectCommand(
-		{
-			ACL: "private",
-			Bucket: configuration.s3Configuration.bucket,
-			ContentType: "application/gzip",
-			Key: key,
-			Body: readStream,
-		});
+		const readStream = fs.createReadStream(archivePath);
 
-	await s3Client.send(putObjectCommand);
+		const putObjectCommand = new PutObjectCommand(
+			{
+				ACL: "private",
+				Bucket: s3Configuration.bucket,
+				ContentType: "application/gzip",
+				Key: key,
+				Body: readStream,
+			});
+
+		await s3Client.send(putObjectCommand);
+	}
+
 }

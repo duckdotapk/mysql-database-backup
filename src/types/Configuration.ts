@@ -27,7 +27,7 @@ export const ConfigurationSchema = z.object(
 
 		outputPath: z.string(),
 
-		s3Configuration: S3ConfigurationSchema,
+		s3Configurations: z.array(S3ConfigurationSchema),
 
 		smtpConfiguration: SMTPConfigurationSchema,
 
