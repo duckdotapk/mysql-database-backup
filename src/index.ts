@@ -398,6 +398,8 @@ export async function getTableNames(databaseUrl: URL): Promise<string[]>
 			databaseName,
 		]) as unknown as [ { TABLE_NAME : string }[] ];
 
+	connection.end();
+
 	let tableNames = rawTableRows.map(rawTableRow => rawTableRow.TABLE_NAME);
 
 	return tableNames;

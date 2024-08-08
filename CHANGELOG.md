@@ -1,6 +1,9 @@
 # Changelog
+## 2.0.3
+Fixed a bug where `getTableNames` did not close its connection to the database.
+
 ## 2.0.2
-Fixing another goof in the previous fixes.
+Fixing another mistake where `createArchive` was writing archives to the wrong path.
 
 ## 2.0.1
 Fixing some mistakes in the `createArchive` function which caused it to not work at all.
