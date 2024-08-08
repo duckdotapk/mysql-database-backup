@@ -76,7 +76,9 @@ export async function createArchive(options: CreateArchiveOptions) : Promise<str
 	// Create Tar
 	//
 
-	const tarWriteStream = fs.createWriteStream(options.outputDirectory);
+	const tarFileName = path.join(options.outputDirectory + ".tar");
+
+	const tarWriteStream = fs.createWriteStream(tarFileName);
 
 	const tarArchive = archiver("tar");
 
@@ -93,11 +95,11 @@ export async function createArchive(options: CreateArchiveOptions) : Promise<str
 	// Gzip Tar
 	//
 
-	const tarReadStream = fs.createReadStream(options.outputDirectory);
+	const tarReadStream = fs.createReadStream(tarFileName);
 
-	const gzipOutputPath = options.outputDirectory + ".gz";
+	const gzipFileName = tarFileName + ".gz";
 
-	const gzipWriteSteam = fs.createWriteStream(gzipOutputPath);
+	const gzipWriteSteam = fs.createWriteStream(gzipFileName);
 
 	const gzip = zlib.createGzip();
 
@@ -115,7 +117,7 @@ export async function createArchive(options: CreateArchiveOptions) : Promise<str
 				.on("finish",
 					() =>
 					{
-						resolve(gzipOutputPath);
+						resolve(gzipFileName);
 					});
 		});
 }

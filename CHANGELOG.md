@@ -1,4 +1,7 @@
 # Changelog
+## 2.0.1
+Fixing some mistakes in the `createArchive` function which caused it to not work at all.
+
 ## 2.0.0
 Rewrote the entire thing to be a package.
 
