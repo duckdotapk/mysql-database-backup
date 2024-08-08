@@ -126,8 +126,8 @@ export type DumpOptions =
 	outputPath: string;
 
 	databaseUrl: URL;
-	defaultInclusion: "exclude" | "include";
-	tables: string[];
+	defaultInclusion?: "exclude" | "include";
+	tables?: string[];
 
 	onStep?: (step: DumpStep) => Promise<void>;
 }
@@ -152,6 +152,10 @@ export type DumpResultSuccess =
 
 export async function dump(options: DumpOptions) : Promise<DumpResult>
 {
+	const defaultInclusion = options.defaultInclusion ?? "exclude";
+
+	const tables = options.tables ?? [];
+
 	const onStep = options.onStep ?? (async () => {});
 
 	const step = async (step: DumpStep) =>
@@ -193,18 +197,18 @@ export async function dump(options: DumpOptions) : Promise<DumpResult>
 
 		let tableNames = await getTableNames(options.databaseUrl);
 
-		switch (options.defaultInclusion)
+		switch (defaultInclusion)
 		{
 			case "exclude":
 			{
-				tableNames = tableNames.filter((tableName) => !options.tables.includes(tableName));
+				tableNames = tableNames.filter((tableName) => !tables.includes(tableName));
 
 				break;
 			}
 
 			case "include":
 			{
-				tableNames = tableNames.filter((tableName) => options.tables.includes(tableName));
+				tableNames = tableNames.filter((tableName) => tables.includes(tableName));
 
 				break;
 			}
