@@ -1,14 +1,10 @@
 # MySQL Database Backup
-This repo contains a Node.js utility I created for backing up a MySQL database's structure and data.
+A library for dumping MySQL databases and creating an archive of their contents.
 
-It backs up each table's structure and data separately, creates an archive, gzips it, and uploads the backup to a private S3 bucket.
+This package uses [mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html) under the hood so it has to be installed somewhere on your system. The path is provided inline so it doesn't matter where.
 
-This is obviously a bit specific to my use case but if you need this tweaked for your use case, maybe open an issue or a pull request.
-
-## Configuration
-Configuration is done via a `configuration.yml` file placed into the folder.
-
-Maybe I'll document configuration options at some point but the configuration is parsed with [zod](https://www.npmjs.com/package/zod) so see `src/types` for more details, for now.
+## Documentation
+Maybe later.
 
 ## License
 [MIT](https://github.com/duckdotapk/mysql-database-backup/blob/main/LICENSE.md)
