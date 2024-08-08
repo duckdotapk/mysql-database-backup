@@ -76,7 +76,7 @@ export async function createArchive(options: CreateArchiveOptions) : Promise<str
 	// Create Tar
 	//
 
-	const tarFileName = path.join(options.outputDirectory + ".tar");
+	const tarFileName = path.join(options.outputDirectory, "dump.tar");
 
 	const tarWriteStream = fs.createWriteStream(tarFileName);
 

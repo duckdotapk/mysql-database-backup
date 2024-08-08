@@ -1,4 +1,7 @@
 # Changelog
+## 2.0.2
+Fixing another goof in the previous fixes.
+
 ## 2.0.1
 Fixing some mistakes in the `createArchive` function which caused it to not work at all.
 
