@@ -4,8 +4,8 @@
   "description": "A library for dumping MySQL databases and creating an archive of their contents.",
   "main": "./lib/index.js",
   "scripts": {
-    "build": "npx rimraf build && npx tsc",
-    "build:watch": "npx rimraf build && npx tsc --watch"
+    "build": "npx rimraf lib && npx tsc",
+    "build:watch": "npx rimraf lib && npx tsc --watch"
   },
   "author": "Loren Goodwin",
   "license": "MIT",
